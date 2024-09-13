@@ -61,4 +61,12 @@ background-color: black;
 
 .game-info {
   margin-left: 20px;
+  padding: 10px;
+}
+
+@media (max-width: 767px) {
+  .game {
+    flex-direction: column; /* Stack the elements vertically on small screens */
+  }
+
 }
