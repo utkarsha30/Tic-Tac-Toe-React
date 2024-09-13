@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
 function Square({ value, onSquareClick }) {
   return (
@@ -70,6 +71,21 @@ export default function Game() {
   const currentSquares = history[currentMove];
   const winner = calculateWinner(currentSquares);
   let status;
+  const notify = (message) =>
+    toast(message, {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "light",
+    });
+  useEffect(() => {
+    if (winner) {
+      notify("Winner: " + winner);
+    }
+  }, [winner]);
   if (winner) {
     status = "Winner : " + winner;
   } else {
@@ -93,14 +109,35 @@ export default function Game() {
     }
     return (
       <li className="m-2" key={move}>
-        <button type="button" class="btn btn-info" onClick={() => jumpTo(move)}>
+        <button
+          type="button"
+          className="btn btn-info"
+          onClick={() => jumpTo(move)}
+        >
           {description}
         </button>
       </li>
     );
   });
+
+  useEffect(() => {
+    notify("Welcome to Tic Tac Toe!");
+  }, []);
+
   return (
     <>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <div className="status">{status}</div>
       <div className="game">
         <div className="game-board">
