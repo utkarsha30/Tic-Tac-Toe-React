@@ -3,15 +3,17 @@ import { ToastContainer, toast } from "react-toastify";
 import { calculateWinner } from "../utils/utils";
 import Board from "./Board";
 import Players from "./Players";
+
 function Game() {
-  // const [xIsNext, setXIsNext] = useState(true);
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
-  const [playerNames, setPlayerNames] = useState([Array(2).fill(null)]);
+  const [playerNames, setPlayerNames] = useState(["", ""]); // Initialize with empty strings
+  const [gameStarted, setGameStarted] = useState(false); // State to track if the game has started
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
   const winner = calculateWinner(currentSquares, playerNames);
   let status;
+
   const notify = (message) =>
     toast(message, {
       position: "top-center",
@@ -22,13 +24,14 @@ function Game() {
       draggable: true,
       theme: "light",
     });
+
   useEffect(() => {
     if (winner) {
       notify("Winner: " + winner);
     }
   }, [winner]);
+
   if (winner) {
-    console.log("winner", winner);
     status = "Winner : " + winner;
   } else {
     status = "Next Player : " + (xIsNext ? playerNames[0] : playerNames[1]);
@@ -39,9 +42,11 @@ function Game() {
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
   }
+
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
   }
+
   const moves = history.map((squares, move) => {
     let description;
     if (move > 0) {
@@ -80,25 +85,37 @@ function Game() {
         pauseOnHover
         theme="light"
       />
-      <Players setPlayers={setPlayerNames} />
-      {playerNames[0]}
-      {playerNames[1]}
-      <div className="status">{status}</div>
-      <div className="game">
-        <div className="game-board">
-          <Board
-            xIsNext={xIsNext}
-            squares={currentSquares}
-            onPlay={handlePlay}
-            players={playerNames}
-          />
-        </div>
-        <div className="game-info ">
-          Steps:
-          <ol>{moves}</ol>
-        </div>
-      </div>
+      {!gameStarted ? ( // Conditional rendering of the Players component
+        <Players
+          setPlayers={(names) => {
+            setPlayerNames(names);
+            setGameStarted(true); // Start the game on submit
+          }}
+        />
+      ) : (
+        <>
+          <div className="title-board">
+            {playerNames[0]} VS {playerNames[1]}
+          </div>
+          <div className="status">{status}</div>
+          <div className="game">
+            <div className="game-board">
+              <Board
+                xIsNext={xIsNext}
+                squares={currentSquares}
+                onPlay={handlePlay}
+                players={playerNames}
+              />
+            </div>
+            <div className="game-info">
+              Steps:
+              <ol>{moves}</ol>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 }
+
 export default Game;

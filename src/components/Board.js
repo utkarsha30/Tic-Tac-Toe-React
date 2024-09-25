@@ -1,11 +1,11 @@
-import Square  from "./Square";
+import Square from "./Square";
 import { calculateWinner } from "../utils/utils";
 function Board({ xIsNext, squares, onPlay }) {
   function handleClick(i) {
     if (squares[i] || calculateWinner(squares)) {
       return;
     }
-    console.log(squares);
+    // console.log(squares);
     // creates copy of squares so we can add X or O in the array and render the new array in squares
     const nextSquares = squares.slice();
     if (xIsNext) {
